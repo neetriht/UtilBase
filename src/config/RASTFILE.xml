@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.IRASTFILE">
+    <select id="GetAllfiles" resultType="com.mybatis.RASTFILE">
+        select * from RASTFILE
+    </select>
+    <select id="GetonefilesByID" parameterType="string" resultType="com.mybatis.RASTFILE">
+        select * from RASTFILE where file_id = #{id}
+    </select>
+    <insert id="addFile" parameterType="com.mybatis.RASTFILE">
+        insert into RASTFILE values(#{file_id}, #{file_path}, #{file_name}, #{file_type},#{status},#{create_time})
+    </insert>
+</mapper>

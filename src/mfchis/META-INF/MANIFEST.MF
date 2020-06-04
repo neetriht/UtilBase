@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: lib/db2jcc.jar lib/db2jcc4.jar lib/db2jcc_license_cisuz.ja
+ r lib/db2jcc_license_cu.jar
+Main-Class: com.cas.TestChis
+
