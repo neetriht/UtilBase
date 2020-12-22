@@ -8,6 +8,7 @@ import com.util.io.FileOut;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,23 +28,46 @@ public class FileRecorder {
 
     public void outputInfo(List<String[]> datasrc) throws IOException {
         //get records src
+
         List<String[]> insertQueue = datasrc;
+        List<String> values = new ArrayList<String>();
+        //create the file
+       /* fdel.checkdeleteFile(outfile);
+        doc = fout.getOutFile(outfile);*/
+
+//        String encoding = System.getProperty("file.encoding");
+//        System.out.println(encoding);
+
+        //records information
+        String common = "&&&&&&&&&&& New inserted!!!&&&&&&&&&&&&&&&&&&&&&&&&&&&&";
+        System.out.println(common);
+        values.add(common);
+        // fout.writeToFile(doc, GlobalTimer.getTimestamp());
+        for (String[] a : insertQueue) {
+            System.out.println(a[2] + ": " + a[1] + ":" + a[40]);
+            values.add(new String((a[2] + ": " + a[1] + ":" + a[40]).getBytes("UTF-8")));
+            // fout.writeToFile(doc,);
+            // new String ((a[2] + ": " + a[1] + ":" + a[40]).getBytes("iso-8859-1"),"utf-8”)
+        }
+
+        this.outputreport(values, outfile);
+    }
+
+
+    public void outputreport(List<String> datasrc, String file) throws IOException {
+        //get records src
+        List<String> insertQueue = datasrc;
 
         //create the file
-        fdel.checkdeleteFile(outfile);
-        doc = fout.getOutFile(outfile);
+        fdel.checkdeleteFile(file);
+        doc = fout.getOutFile(file);
 
         String encoding = System.getProperty("file.encoding");
         System.out.println(encoding);
 
-        //records information
-        System.out.println("&&&&&&&&&&& New inserted!!!&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
         fout.writeToFile(doc, GlobalTimer.getTimestamp());
-        for (String[] a : insertQueue) {
-            System.out.println(a[2] + ": " + a[1] + ":" + a[40]);
-            fout.writeToFile(doc, new String((a[2] + ": " + a[1] + ":" + a[40]).getBytes("UTF-8")));
-            // new String ((a[2] + ": " + a[1] + ":" + a[40]).getBytes("iso-8859-1"),"utf-8”)
+        for (String a : insertQueue) {
+            fout.writeToFile(doc, a + "\n\r");
         }
     }
 

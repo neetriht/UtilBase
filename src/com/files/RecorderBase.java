@@ -22,7 +22,7 @@ public  class RecorderBase {
     DataOutputStream doc;
 
 
-    public void outputStatus(String filename, Class sc) throws IOException {
+    public void outputStatus(String filename) throws IOException {
 
         //create the file
         fdel.checkdeleteFile(filename);

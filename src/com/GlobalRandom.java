@@ -12,6 +12,8 @@ import java.util.Random;
  */
 public class GlobalRandom {
 
+
+
     public static String getRandom(String[] str) {
         Random random = new Random();
         int number = random.nextInt(str.length);

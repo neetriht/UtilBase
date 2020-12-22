@@ -41,7 +41,7 @@ public class CASDB2 extends ConnectionManager implements DataSource {
     private static String password_prod = "vfr45tgb";
 
     private static String user_uat = "C207745";
-    private static String password_uat = "LOG77GOL";
+    private static String password_uat = "LOG99GOL";
 //    private static String url = DB2U_url;
 //    private static String user = "C207745";
 //    private static String password = "MKO09IJN";

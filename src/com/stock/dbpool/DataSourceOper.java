@@ -14,6 +14,7 @@ public class DataSourceOper {
     ResultSet odbcrs = null;
 
     public DataSourceOper() {
+
         //datasource = new DB2DataBase(propvalue);
     }
 
