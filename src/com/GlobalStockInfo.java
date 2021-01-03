@@ -60,7 +60,20 @@ public class GlobalStockInfo {
         return info;
     }
 
+    public static void printReportDetail(String[] sBean) {
 
+        System.out.println("股票名称： " + sBean[0]);
+        System.out.println("基本每股收益(元)/EPS： " + sBean[1]);
+        System.out.println("每股净资产(元)： " + sBean[2]);
+        System.out.println("每股公积金(元)： " + sBean[3]);
+        System.out.println("每股未分配利润(元)： " + sBean[4]);
+        System.out.println("每股经营现金流(元)： " + sBean[5]);
+        System.out.println("营业总收入(元)： " + sBean[6]);
+        System.out.println("毛利润(元)： " + sBean[7]);
+        System.out.println("归属净利润(元)： " + sBean[8]);
+        System.out.println("资产负债率(%)： " + sBean[9]);
+        System.out.println("毛利率(%)： " + sBean[10]);
+    }
 //    public static void printInfoBean(String stock_code, InfoBean info) {
 //
 //        System.out.println("股票代码：" + info.getSTOCK_CODE());

@@ -7,6 +7,7 @@ import com.stock.dbpool.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Map;
 import java.util.Properties;
 
 public class CHISDB2 extends ConnectionManager implements DataSource {
@@ -45,9 +46,9 @@ public class CHISDB2 extends ConnectionManager implements DataSource {
     }
 
     @Override
-    public Connection getInstance(String threadid) {
+    public Map.Entry<String, Connection> getInstance() {
         if (db2db == null)
             db2db = new CHISDB2();
-        return db2db.getConnection(threadid);
+        return db2db.getConnection();
     }
 }

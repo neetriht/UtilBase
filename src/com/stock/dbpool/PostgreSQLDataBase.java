@@ -2,6 +2,7 @@ package com.stock.dbpool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Map;
 
 /**
  * Created by neetriht on 2017-07-10.
@@ -46,10 +47,10 @@ public class PostgreSQLDataBase extends ConnectionManager implements DataSource 
 //
 
     @Override
-    public Connection getInstance(String threadid) {
+    public Map.Entry<String, Connection> getInstance() {
         if (postgredb == null)
             postgredb = new PostgreSQLDataBase();
-        return postgredb.getConnection(threadid);
+        return postgredb.getConnection();
     }
 
 //    @Override

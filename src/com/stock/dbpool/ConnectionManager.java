@@ -4,12 +4,15 @@ import com.GlobalRandom;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.AbstractMap;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 
 public abstract class ConnectionManager {
 
     public static Hashtable<String, Connection> ConnectionPools = new Hashtable<String, Connection>();
+
     static ConnectionManager connmager = null;
     private static int CONN_NUM = 1000;
     private static int conn_base = 0;
@@ -29,47 +32,59 @@ public abstract class ConnectionManager {
         return ConnectionPools;
     }
 
-    public void returnConn(String conn_num, Connection conn) {
-        ConnectionPools.put(conn_num, conn);
+    public void returnConn(Map.Entry<String, Connection> conn) {
+       // System.out.println("return connection:" + conn.getKey());
+        ConnectionPools.put(conn.getKey(), conn.getValue());
     }
 
-    public void releaseConnection(String conn_num, Connection conn) {
-        ConnectionPools.put(conn_num, conn);
+    public void releaseConnection(String conn_num, Map.Entry<String, Connection> conn) {
+        ConnectionPools.remove(conn.getKey());
     }
 
-    public Connection getConnection() {
+    public synchronized Map.Entry<String, Connection> getConnection() {
+        String auto_key = null;
         if (ConnectionPools == null) {
             ConnectionPools = new Hashtable<String, Connection>();
         }
         Connection conn = null;
         if (ConnectionPools.size() > 0) {
-            String auto_key = ConnectionPools.keys().nextElement();
+
+            auto_key = ConnectionPools.keys().nextElement();
             conn = ConnectionPools.get(auto_key);
             try {
                 if (conn == null) {
-                    RemoveConn(auto_key);
+                    //RemoveConn(auto_key);
                     conn = newConn(auto_key);
                 } else {
                     if (conn.isClosed()) {
-                        RemoveConn(auto_key);
+
                         conn = newConn(auto_key);
                     }
                 }
-                // System.out.println("Use Old connection: " + connName);
+
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         } else {
-            // System.out.println("Creante new connection: " + Thread.currentThread().getId());
-            conn = newConn(GlobalRandom.getRandomString(3, 3));
+            //
+            String new_auto_key = GlobalRandom.getRandomString(4, 3);
+            if (!ConnectionPools.keySet().contains(new_auto_key)) {
+                new_auto_key = GlobalRandom.getRandomString(4, 3);
+                System.out.println("ABC new connection: " + new_auto_key);
+            }
+          //  System.out.println("Creante new connection: " + new_auto_key);
+            conn = newConn(new_auto_key);
+            auto_key = new_auto_key;
             //
             // poolName);
         }
-        return conn;
-    }
+        //System.out.println("Used connection: " + auto_key);
+        RemoveConn(auto_key);
+        return new AbstractMap.SimpleEntry<>(auto_key, conn);
 
+    }
 
     public Connection getConnection(String connName) {
         if (ConnectionPools == null) {

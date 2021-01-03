@@ -5,6 +5,7 @@ import com.config.PropertyUtilBase;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Map;
 import java.util.Properties;
 
 public class PGDatabase extends ConnectionManager implements DataSource {
@@ -17,6 +18,7 @@ public class PGDatabase extends ConnectionManager implements DataSource {
 //    private static String password = "mko00okm";
 //
     static PGDatabase pgbase;
+    private static int dbclient_num = 0;
     //    static Connection odbcconn;
     String config_file = "Postgres.properties";
     static Connection odbcconn;
@@ -48,10 +50,10 @@ public class PGDatabase extends ConnectionManager implements DataSource {
     public Connection newConn(String threadid) {
         try {
             Class.forName(Driver).newInstance();
-            System.out.println("Info: " + user + " : " + password);
+            dbclient_num++;
+            System.out.println("==========> Info: " + user + " : " + password + " and client number: " + dbclient_num);
             odbcconn = DriverManager.getConnection(url, user, password);
             odbcconn.setAutoCommit(true);
-
             ConnectionManager.getPool().put(threadid, odbcconn);  //add(odbcconn);
             //System.out.println("Created new Connection: " + connName + " | Total connection size: " + ConnectionManager.getPool().size());
             return odbcconn;
@@ -63,12 +65,11 @@ public class PGDatabase extends ConnectionManager implements DataSource {
     }
 
     @Override
-    public Connection getInstance(String threadid) {
+    public Map.Entry<String, Connection> getInstance() {
         if (pgbase == null) {
-            System.out.println("######################  ----->  " + threadid);
+            System.out.println("######################  ----->  " + Thread.currentThread().getId());
             pgbase = new PGDatabase();
         }
-
-        return pgbase.getConnection(threadid);
+        return pgbase.getConnection();
     }
 }

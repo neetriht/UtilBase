@@ -1,8 +1,12 @@
 package com.stock.dbpool;
 
+import com.GlobalRandom;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.AbstractMap;
+import java.util.Map;
 
 public class MySQLDataBase extends ConnectionManager implements DataSource {
     // @@@mysql
@@ -25,14 +29,14 @@ public class MySQLDataBase extends ConnectionManager implements DataSource {
     static Connection odbcconn;
 
 
-    public static Connection conn() {
+    public static Map.Entry<String, Connection> conn() {
 
         try {
             Class.forName(Driver).newInstance();
 
             odbcconn = DriverManager.getConnection(url_m, user, password);
             odbcconn.setAutoCommit(false);
-            return odbcconn;
+            return new AbstractMap.SimpleEntry<String, Connection>(GlobalRandom.getRandomString(4, 3), odbcconn);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -65,14 +69,14 @@ public class MySQLDataBase extends ConnectionManager implements DataSource {
         }
     }
 
-    public Connection getInstance() {
-        // TODO Auto-generated method stub
-        if (mysqldb == null)
-            mysqldb = new MySQLDataBase();
-        return mysqldb.conn();
-    }
+//    public Connection getInstance() {
+//        // TODO Auto-generated method stub
+//        if (mysqldb == null)
+//            mysqldb = new MySQLDataBase();
+//        return mysqldb.conn();
+//    }
 
-    public Connection getInstance(String threadid) {
+    public Map.Entry<String, Connection> getInstance() {
         if (mysqldb == null)
             mysqldb = new MySQLDataBase();
         return mysqldb.conn();
@@ -94,7 +98,7 @@ public class MySQLDataBase extends ConnectionManager implements DataSource {
     @Override
     public Connection newConn(String threadid) {
 
-        Connection c = conn();
-        return c;
+        //Connection c = ;
+        return conn().getValue();
     }
 }

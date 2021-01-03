@@ -6,6 +6,8 @@ import com.config.PropertyUtilBase;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class DB2DataBase extends ConnectionManager implements DataSource {
@@ -27,6 +29,7 @@ public class DB2DataBase extends ConnectionManager implements DataSource {
     static Connection odbcconn;
     static Properties prop;
     private static String Driver, url, user, password;
+
     public DB2DataBase(String propvalue) {
         try {
             //prop.load(DB2DataBase.class.getClassLoader().getResourceAsStream("com/config/DB2local.properties"));
@@ -45,6 +48,7 @@ public class DB2DataBase extends ConnectionManager implements DataSource {
         user = (String) prop.get("user");
 
     }
+
     public DB2DataBase() {
 
         try {
@@ -91,15 +95,15 @@ public class DB2DataBase extends ConnectionManager implements DataSource {
 //    }
 
     @Override
-    public Connection getInstance(String threadid) {
+    public Map.Entry<String, Connection> getInstance() {
         // TODO Auto-generated method stub
         if (db2db == null) {
-            System.out.println("######################  ----->  " + threadid);
+            System.out.println("######################  ----->  " + Thread.currentThread().getId());
             db2db = new DB2DataBase();
         }
         //c = db2db.pullConnection();
 
-        return db2db.getConnection(threadid);
+        return db2db.getConnection();
         //return this.getInstance("1");
     }
 

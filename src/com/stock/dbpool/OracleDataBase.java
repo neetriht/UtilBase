@@ -3,6 +3,7 @@ package com.stock.dbpool;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
 
 public class OracleDataBase extends ConnectionManager implements DataSource {
     private static String Driver = "oracle.jdbc.driver.OracleDriver";
@@ -55,11 +56,11 @@ public class OracleDataBase extends ConnectionManager implements DataSource {
     }
 
     @Override
-    public Connection getInstance(String connName) {
+    public Map.Entry<String, Connection> getInstance() {
         // TODO Auto-generated method stub
         if (oracledb == null)
             oracledb = new OracleDataBase();
-        return oracledb.getConnection(connName);
+        return oracledb.getConnection();
     }
 //
 //    @Override

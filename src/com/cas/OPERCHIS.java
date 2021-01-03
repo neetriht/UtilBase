@@ -3,6 +3,7 @@ package com.cas;
 import com.stock.dbpool.DataSource;
 
 import java.sql.*;
+import java.util.Map;
 
 public class OPERCHIS {
 
@@ -16,7 +17,7 @@ public class OPERCHIS {
     public Statement getStatement(String threadid) {
         try {
 
-            conn = datasource.getInstance(threadid);
+            conn = datasource.getInstance().getValue();
             conn.setAutoCommit(false);
             return conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
@@ -32,7 +33,7 @@ public class OPERCHIS {
 
         try {
             // System.out.println(sql);
-            conn = datasource.getInstance(threadid);
+            conn = datasource.getInstance().getValue();
             // ResultSet.CONCUR_UPDATABLE);
 
             stmt = conn.createStatement();
@@ -54,7 +55,7 @@ public class OPERCHIS {
 
     public boolean executeUpdate(String sql, String threadid) {
 
-        Connection short_conn = datasource.getInstance(threadid);
+        Connection short_conn = datasource.getInstance().getValue();
         try {
             // conn = datasource.getInstance(threadid);
             stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -73,7 +74,7 @@ public class OPERCHIS {
     public PreparedStatement prepareStatement(String sql, String threadid) {
         // DataSource datasource = new DB2DataBase();
         // DataSource datasource = new OracleDataBase();
-        Connection short_conn = datasource.getInstance(threadid);
+        Connection short_conn = datasource.getInstance().getValue();
         try {
             //short_conn = datasource.getInstance(threadid);
             short_conn.setAutoCommit(true);

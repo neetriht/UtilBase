@@ -1,6 +1,7 @@
 package com.stock.dbpool;
 
 import java.sql.*;
+import java.util.Map;
 
 public class DataSourceOper {
 
@@ -27,11 +28,11 @@ public class DataSourceOper {
         datasource = ds;
     }
 
-    public Statement getStatement(String threadid) {
+    public Statement getStatement() {
         try {
 
             //conn = datasource.getConnection();
-            datasource.getInstance(threadid);
+            conn = datasource.getInstance().getValue();
             //
             conn.setAutoCommit(false);
             Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -46,8 +47,10 @@ public class DataSourceOper {
     }
 
     public Boolean detect() {
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
         try {
-            Connection conn = datasource.getInstance("000");
+            // Connection conn = datasource.getInstance("000");
             //conn.setAutoCommit(false);
             //stmt = conn.createStatement();
             //stmt.executeQuery("SELECT * FROM RASTSDD");
@@ -55,11 +58,15 @@ public class DataSourceOper {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            datasource.returnConn(conntry);
         }
     }
 
     public String doQueryReturnBoolean(String sql) {
-        Connection short_conn = datasource.getInstance("876");
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        //  Connection short_conn = datasource.getInstance("876");
         try {
             // conn = datasource.getConnection();
             stmt = short_conn.createStatement();
@@ -70,6 +77,8 @@ public class DataSourceOper {
             System.out.println(sql);
             System.err.println("sql_data.executeInsert:" + ex.getMessage());
             return "0";
+        } finally {
+            datasource.returnConn(conntry);
         }
     }
 
@@ -107,10 +116,12 @@ public class DataSourceOper {
 
     public ResultSet executeQuery(String sql, String threadid) {
         ResultSet odbcrs;
+
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
         try {
             //System.out.println(threadid + ":  " + sql);
             // DataSource datasource = new OracleDataBase();
-            conn = datasource.getInstance(threadid);
+            conn = conntry.getValue();
             // stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
             // ResultSet.CONCUR_UPDATABLE);
 
@@ -133,8 +144,9 @@ public class DataSourceOper {
 
 
     public boolean executeDelete(String sql) {
-
-        Connection short_conn = datasource.getInstance("999");
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        //Connection short_conn = datasource.getInstance("999");
         try {
             System.out.println(sql);
             // conn = datasource.getConnection();
@@ -146,19 +158,22 @@ public class DataSourceOper {
             System.out.println(sql);
             System.err.println("sql_data.executeDelete:" + ex.getMessage());
             return false;
+        } finally {
+            datasource.returnConn(conntry);
         }
+
         return true;
     }
 
-    public boolean checkExisting(String sql) {
-        return checkExisting(sql, "9985");
-    }
+//    //public boolean checkExisting(String sql) {
+//        return checkExisting(sql, "9985");
+//    }
 
-    public boolean checkExisting(String sql, String threadid) {
+    public boolean checkExisting(String sql) {
         // System.out.println("Thread id is : " + threadid);
         boolean existing = true;
-        Connection short_conn =
-                datasource.getInstance(threadid);
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
 
         if (short_conn != null) {
             try {
@@ -179,23 +194,26 @@ public class DataSourceOper {
                     // closeResultSet(odbcrs, conn);
                 }
             } catch (SQLException ex) {
-                System.out.println(threadid + ": " + sql + " Pools : " + ConnectionManager.ConnectionPools.size());
-
+                System.out.println(sql + " Pools : " + ConnectionManager.ConnectionPools.size());
                 System.err.println("sql_data.checkExisting:" + ex.getMessage() + ": " + Thread.currentThread().getId());
                 ex.printStackTrace();
                 return false;
+            } finally {
+                datasource.returnConn(conntry);
             }
         }
         return false;
     }
 
+//    public boolean executeInsert(String sql) {
+//        return executeInsert(sql);
+//    }
+
     public boolean executeInsert(String sql) {
-        return executeInsert(sql, "9986");
-    }
-
-    public boolean executeInsert(String sql, String threadid) {
-
-        Connection short_conn = datasource.getInstance(threadid);
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        // String t = conntry.getKey();
+        //Connection short_conn = conntry.getValue();
         try {
 
             //conn = datasource.getInstance(threadid);
@@ -203,25 +221,27 @@ public class DataSourceOper {
             stmt.executeUpdate(sql);
             short_conn.commit();
 
-            return true;
+            //  return true;
         } catch (Exception ex) {
             System.out.println(sql);
             System.err.println("sql_data.executeInsert:" + ex.getMessage());
             return false;
+        } finally {
+            datasource.returnConn(conntry);
         }
-
+        return true;
     }
 
     /**
      * @webmethod
      */
+//   public boolean executeUpdate(String sql) {
+//        return executeUpdate(sql, "9987");
+//    }
     public boolean executeUpdate(String sql) {
-        return executeUpdate(sql, "9987");
-    }
-
-    public boolean executeUpdate(String sql, String threadid) {
-
-        Connection short_conn = datasource.getInstance(threadid);
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        // Connection short_conn = datasource.getInstance();
         try {
             // conn = datasource.getInstance(threadid);
             stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -232,18 +252,22 @@ public class DataSourceOper {
             System.out.println(sql);
             System.err.println("sql_data.executeUpdate:" + ex.getMessage());
             return false;
+        } finally {
+            datasource.returnConn(conntry);
         }
         return true;
     }
 
-    public PreparedStatement prepareStatement(String sql) {
-        return prepareStatement(sql, "9988");
-    }
+//    public PreparedStatement prepareStatement(String sql) {
+//        return prepareStatement(sql);
+//    }
 
-    public PreparedStatement prepareStatement(String sql, String threadid) {
+    public PreparedStatement prepareStatement(String sql) {
         // DataSource datasource = new DB2DataBase();
         // DataSource datasource = new OracleDataBase();
-        Connection short_conn = datasource.getInstance(threadid);
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        //Connection short_conn = datasource.getInstance(threadid);
         try {
             //short_conn = datasource.getInstance(threadid);
             short_conn.setAutoCommit(true);
@@ -252,6 +276,8 @@ public class DataSourceOper {
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
+        } finally {
+            datasource.returnConn(conntry);
         }
     }
 
@@ -263,6 +289,7 @@ public class DataSourceOper {
             System.err.println("sql_data.executeUpdate:" + ex.getMessage());
             return -1;
         }
+
         // return true;
     }
 
@@ -274,10 +301,10 @@ public class DataSourceOper {
 
     }
 
-    public void addBatch(String sql, String threadid) {
+    public void addBatch(String sql) {
         try {
             if (stmt == null)
-                stmt = this.getStatement(threadid);
+                stmt = this.getStatement();
             stmt.addBatch(sql);
         } catch (SQLException ex) {
             System.out.println(sql);
@@ -285,12 +312,14 @@ public class DataSourceOper {
         }
     }
 
-    public int[] executeBatch(String threadid) {
-        Connection short_conn = datasource.getInstance(threadid);
+    public int[] executeBatch() {
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        // Connection short_conn = datasource.getInstance(threadid);
         try {
             // System.out.println("AAA");
             if (stmt == null)
-                stmt = this.getStatement(threadid);
+                stmt = this.getStatement();
             int[] a = stmt.executeBatch();
             short_conn.commit();
             return a;
@@ -298,6 +327,8 @@ public class DataSourceOper {
 
             System.err.println("sql_data.executeBatch:" + ex.getMessage());
             return null;
+        } finally {
+            datasource.returnConn(conntry);
         }
 
     }
@@ -309,7 +340,9 @@ public class DataSourceOper {
      */
 
     public boolean validateQuery(String sql) {
-        Connection short_conn = datasource.getInstance("888");
+        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Connection short_conn = conntry.getValue();
+        //Connection short_conn = datasource.getInstance("888");
         try {
             stmt = short_conn.createStatement();
             odbcrs = stmt.executeQuery(sql);
@@ -325,6 +358,8 @@ public class DataSourceOper {
             System.out.println(sql);
             System.err.println("sql_data.validateQuery:" + ex.getMessage());
             return false;
+        } finally {
+            datasource.returnConn(conntry);
         }
 
     }
