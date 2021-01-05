@@ -1,8 +1,10 @@
 package com.stock.dbpool;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 
 public class Test {
 
@@ -16,32 +18,33 @@ public class Test {
         testpg();
     }
 
-    public static void testConn() {
-        String sql = " CREATE TABLE RASTDESC( " + "STOCK_CODE   	varchar(20) 		NOT NULL WITH DEFAULT,"
-                + "DESC01 				varchar(65516), "
-                + "UPDATE_DT 		DATE 						NOT NULL WITH DEFAULT,"
-                + "primary key(STOCK_CODE , UPDATE_DT))";
-        DataSourceOper sconn2 = new DataSourceOper(new MySQLDataBase());
-        DataSourceOper sconn = new DataSourceOper(new DB2DataBase());
-        System.out.println(sql);
+//    public static void testConn() {
+//        String sql = " CREATE TABLE RASTDESC( " + "STOCK_CODE   	varchar(20) 		NOT NULL WITH DEFAULT,"
+//                + "DESC01 				varchar(65516), "
+//                + "UPDATE_DT 		DATE 						NOT NULL WITH DEFAULT,"
+//                + "primary key(STOCK_CODE , UPDATE_DT))";
+//        DataSourceOper sconn2 = new DataSourceOper(new MySQLDataBase());
+//        DataSourceOper sconn = new DataSourceOper(new DB2DataBase());
+//        System.out.println(sql);
+//
+//        String sql2 = "select substr(stock_code,1,6), trim(desc01), char(update_dt) from rastdesc fetch first 10 rows only";
+//        // sconn.doQueryReturnBoolean(sql);
+//        try {
+//
+//            ResultSet rs = sconn.executeQuery(sql2, "112");
+//            while (rs.next()) {
+//                sconn2.executeInsert("insert into RASTDESC values('" + rs.getString(1) + "','" + rs.getString(2) + "','"
+//                        + rs.getString(3) + "')");
+//                System.out.println(rs.getString(1) + " " + rs.getString(2).replace("?", "") + " " + rs.getString(3));
+//
+//            }
+//        } catch (SQLException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
 
-        String sql2 = "select substr(stock_code,1,6), trim(desc01), char(update_dt) from rastdesc fetch first 10 rows only";
-        // sconn.doQueryReturnBoolean(sql);
-        try {
-            ResultSet rs = sconn.executeQuery(sql2, "112");
-            while (rs.next()) {
-                sconn2.executeInsert("insert into RASTDESC values('" + rs.getString(1) + "','" + rs.getString(2) + "','"
-                        + rs.getString(3) + "')");
-                System.out.println(rs.getString(1) + " " + rs.getString(2).replace("?", "") + " " + rs.getString(3));
-
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public static void testPostgres() {
+  /*  public static void testPostgres() {
         String sql01 = "select * from icetcompany";
         DataSourceOper sconn2 = new DataSourceOper(new PostgreSQLDataBase());
         // DataSourceOper sconn = new DataSourceOper(new DB2DataBase());
@@ -56,7 +59,7 @@ public class Test {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static void testMysql() {
         String sql01 = "select * from ICETUSER";
@@ -65,10 +68,16 @@ public class Test {
         System.out.println(sql01);
 
         try {
-            ResultSet rs = sconn2.executeQuery(sql01, "116");
+            Map.Entry<String, Connection> c = sconn2.getConnection();
+            Statement st = c.getValue().createStatement();
+            ResultSet rs = st.executeQuery(sql01);
+
             while (rs.next()) {
                 System.out.println(rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4));
             }
+            rs.close();
+            st.close();
+            sconn2.releaseConnection(c);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -82,13 +91,20 @@ public class Test {
         System.out.println(sql);
         // sconn.doQueryReturnBoolean(sql);
         try {
-            ResultSet rs = sconn.executeQuery(sql, "114");
+            Map.Entry<String, Connection> c = sconn.getConnection();
+            Statement st = c.getValue().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+           // ResultSet rs = sconn.executeQuery(sql, "114");
             while (rs.next()) {
                 // sconn2.executeInsert("insert into RASTDESC values('"+
                 // rs.getString(1) +"','"+rs.getString(2)+"','"
                 // +rs.getString(3)+"')");
                 System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3));
             }
+            rs.close();
+            st.close();
+            sconn.releaseConnection(c);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             System.out.println(e);
@@ -104,14 +120,20 @@ public class Test {
         System.out.println(sql);
         // sconn.doQueryReturnBoolean(sql);
         try {
+            Map.Entry<String, Connection> c = sconn.getConnection();
+            Statement st = c.getValue().createStatement();
+            ResultSet rs = st.executeQuery(sql02);
 
-            ResultSet rs = sconn.executeQuery(sql02, "20");
+            //ResultSet rs = sconn.executeQuery(sql02, "20");
             while (rs.next()) {
                 // sconn2.executeInsert("insert into RASTDESC values('"+
                 // rs.getString(1) +"','"+rs.getString(2)+"','"
                 // +rs.getString(3)+"')");
                 System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3));
             }
+            rs.close();
+            st.close();
+            sconn.releaseConnection(c);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             System.out.println(e);
@@ -127,13 +149,19 @@ public class Test {
         System.out.println(sql);
         // sconn.doQueryReturnBoolean(sql);
         try {
-            ResultSet rs = sconn.executeQuery(sql, "114");
+            Map.Entry<String, Connection> c = sconn.getConnection();
+            Statement st = c.getValue().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+         //   ResultSet rs = sconn.executeQuery(sql, "114");
             while (rs.next()) {
                 // sconn2.executeInsert("insert into RASTDESC values('"+
                 // rs.getString(1) +"','"+rs.getString(2)+"','"
                 // +rs.getString(3)+"')");
                 System.out.println(rs.getString(1) + " " + rs.getDouble(2) + " " + rs.getDouble(3));
             }
+            rs.close();
+            st.close();
+            sconn.releaseConnection(c);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             System.out.println(e);

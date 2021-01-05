@@ -1,24 +1,23 @@
 package com.stock.dbpool;
 
 import java.sql.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DataSourceOper {
 
-    //DataSource datasource = new DB2DataBase();
-    //DataSource datasource = new DB2DataBase();
+    // DataSource datasource = new DB2DataBase();
     // DataSource datasource = new OracleDataBase();
     DataSource datasource = new PGDatabase();
-    Connection conn = null;
     Statement stmt = null;
     String sql = null;
     ResultSet odbcrs = null;
 
     public DataSourceOper() {
-
         //datasource = new DB2DataBase(propvalue);
     }
-
 
     public DataSourceOper(String propvalue) {
         datasource = new DB2DataBase(propvalue);
@@ -30,57 +29,60 @@ public class DataSourceOper {
 
     public Statement getStatement() {
         try {
-
-            //conn = datasource.getConnection();
-            conn = datasource.getInstance().getValue();
-            //
+            Connection conn = datasource.getInstance().getValue();
             conn.setAutoCommit(false);
             Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             return st;
-
         } catch (SQLException ex) {
-
             System.err.println("sql_data.getStatement:" + ex.getMessage());
             ex.printStackTrace();
             return null;
         }
     }
 
-    public Boolean detect() {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
+    public int executeUpdate(PreparedStatement tt) {
         try {
-            // Connection conn = datasource.getInstance("000");
-            //conn.setAutoCommit(false);
-            //stmt = conn.createStatement();
-            //stmt.executeQuery("SELECT * FROM RASTSDD");
-            return !conn.isClosed();
+            return tt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(sql);
+            System.err.println("sql_data.executeUpdate:" + ex.getMessage());
+            return -1;
+        }
+    }
+
+    public Boolean detect() {
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            return !short_conn.isClosed();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
-            datasource.returnConn(conntry);
+            datasource.returnConn(connectionpair);
         }
     }
 
-    public String doQueryReturnBoolean(String sql) {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
-        //  Connection short_conn = datasource.getInstance("876");
-        try {
-            // conn = datasource.getConnection();
-            stmt = short_conn.createStatement();
-            odbcrs = stmt.executeQuery(sql);
 
-            return "1";
-        } catch (SQLException ex) {
-            System.out.println(sql);
-            System.err.println("sql_data.executeInsert:" + ex.getMessage());
-            return "0";
-        } finally {
-            datasource.returnConn(conntry);
-        }
-    }
+//    public String doQueryReturnBoolean(String sql) {
+//        String value;
+//        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+//        Connection short_conn = connectionpair.getValue();
+//        //  Connection short_conn = datasource.getInstance("876");
+//        try {
+//            // conn = datasource.getConnection();
+//            Statement stmt = short_conn.createStatement();
+//            ResultSet rs = stmt.executeQuery(sql);
+//            value =  "1";
+//        } catch (SQLException ex) {
+//            System.out.println(sql);
+//            System.err.println("sql_data.executeInsert:" + ex.getMessage());
+//            value =  "0";
+//        } finally {
+//            datasource.returnConn(connectionpair);
+//        }
+//        return value;
+//    }
 
 
 //    public ResultSet HttpexecuteQuery(String sql) {
@@ -114,14 +116,77 @@ public class DataSourceOper {
 //       // datasource.releaseConnection(c);
 //    }
 
-    public ResultSet executeQuery(String sql, String threadid) {
+  /*  public int checkClosed(String sql) {
+        ResultSet odbcrs;
+        int rt = 0;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        try {
+            conn = connectionpair.getValue();
+            stmt = conn.createStatement();
+            odbcrs = stmt.executeQuery(sql);
+            if (odbcrs != null & odbcrs.next() & !odbcrs.isClosed()) {
+                String cc = odbcrs.getString(2);
+                if (cc != null) {
+                    if (cc.equals("C")) {
+                        rt = 2;
+                    } else {
+                       *//* String onboard = rs.getString(3);
+                        if (onboard == null)
+                            return 3;*//*
+                        rt = 1;
+                    }
+                } else
+                    rt = 1;
+            }
+        } catch (Exception ex) {
+            System.err.println("sql_data.executeQuery:" + ex.getMessage());
+            ex.printStackTrace();
+            return 0;
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return rt;
+    }*/
+
+    public int checkBackInt(String sql, ICheckTask checktask) {
+        int value;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection conn = connectionpair.getValue();
+        try {
+            Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            value = checktask.checkWay(rs);
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            System.err.println("sql_data.executeQuery:" + ex.getMessage());
+            ex.printStackTrace();
+            return 0;
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
+    public Map.Entry<String, Connection> getConnection() {
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        return connectionpair;
+    }
+
+
+    public void releaseConnection(Map.Entry<String, Connection> CONNECTIONPAIR) {
+        datasource.returnConn(CONNECTIONPAIR);
+    }
+
+  /*  public ResultSet executeQuery(String sql, String threadid) {
         ResultSet odbcrs;
 
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
         try {
             //System.out.println(threadid + ":  " + sql);
             // DataSource datasource = new OracleDataBase();
-            conn = conntry.getValue();
+            conn = connectionpair.getValue();
             // stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
             // ResultSet.CONCUR_UPDATABLE);
 
@@ -139,134 +204,109 @@ public class DataSourceOper {
             ex.printStackTrace();
             return null;
         }
+
+        // new AbstractMap.SimpleEntry<>(auto_key, conn);
         return odbcrs;
-    }
+    }*/
 
 
-    public boolean executeDelete(String sql) {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
-        //Connection short_conn = datasource.getInstance("999");
+    /* public boolean executeDelete(String sql) {
+         Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+         Connection short_conn = connectionpair.getValue();
+         //Connection short_conn = datasource.getInstance("999");
+         try {
+             System.out.println(sql);
+             // conn = datasource.getConnection();
+             stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+             int xxx = stmt.executeUpdate(sql);
+             System.out.println(xxx);
+             short_conn.commit();
+         } catch (SQLException ex) {
+             System.out.println(sql);
+             System.err.println("sql_data.executeDelete:" + ex.getMessage());
+             return false;
+         } finally {
+             datasource.returnConn(connectionpair);
+         }
+
+         return true;
+     }
+     private void closeResultSet(ResultSet rs, Connection c) {
         try {
-            System.out.println(sql);
-            // conn = datasource.getConnection();
-            stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            int xxx = stmt.executeUpdate(sql);
-            System.out.println(xxx);
-            short_conn.commit();
+            if (!rs.isClosed())
+                rs.close();
+
+//            if (!c.isClosed())
+//                c.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
+    public boolean checkExisting(String sql) {
+        boolean existing = false;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement();
+            ResultSet odbcrs = stmt.executeQuery(sql);
+            if (odbcrs.next()) {
+                existing = true;
+            }
         } catch (SQLException ex) {
-            System.out.println(sql);
-            System.err.println("sql_data.executeDelete:" + ex.getMessage());
+            System.out.println(sql + " Pools : " + ConnectionManager.ConnectionPools.size());
+            System.err.println("sql_data.checkExisting:" + ex.getMessage() + ": " + Thread.currentThread().getId());
+            ex.printStackTrace();
             return false;
         } finally {
-            datasource.returnConn(conntry);
+            datasource.returnConn(connectionpair);
         }
-
-        return true;
+        return existing;
     }
 
-//    //public boolean checkExisting(String sql) {
-//        return checkExisting(sql, "9985");
-//    }
 
-    public boolean checkExisting(String sql) {
-        // System.out.println("Thread id is : " + threadid);
-        boolean existing = true;
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
-
-        if (short_conn != null) {
-            try {
-                Statement stmt = short_conn.createStatement();
-                // stmt =
-                // conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-                // System.out.println(sql + ": " +
-                // Thread.currentThread().getId());
-                // System.out.println(sql + ": " + conn.isValid(5));
-                // System.out.println(sql + ": " + stmt.isClosed());
-                ResultSet odbcrs = stmt.executeQuery(sql);
-
-                if (!odbcrs.isClosed()) {
-                    if (odbcrs.next()) {
-                        //closeResultSet(odbcrs, conn);
-                        return true;
-                    }
-                    // closeResultSet(odbcrs, conn);
-                }
-            } catch (SQLException ex) {
-                System.out.println(sql + " Pools : " + ConnectionManager.ConnectionPools.size());
-                System.err.println("sql_data.checkExisting:" + ex.getMessage() + ": " + Thread.currentThread().getId());
-                ex.printStackTrace();
-                return false;
-            } finally {
-                datasource.returnConn(conntry);
-            }
-        }
-        return false;
-    }
-
-//    public boolean executeInsert(String sql) {
-//        return executeInsert(sql);
-//    }
-
-    public boolean executeInsert(String sql) {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
-        // String t = conntry.getKey();
-        //Connection short_conn = conntry.getValue();
+    public boolean executeSQL(String sql) {
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
         try {
-
-            //conn = datasource.getInstance(threadid);
-            stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             stmt.executeUpdate(sql);
             short_conn.commit();
-
-            //  return true;
+            stmt.close();
         } catch (Exception ex) {
             System.out.println(sql);
             System.err.println("sql_data.executeInsert:" + ex.getMessage());
             return false;
         } finally {
-            datasource.returnConn(conntry);
+            datasource.returnConn(connectionpair);
         }
         return true;
     }
 
-    /**
-     * @webmethod
-     */
-//   public boolean executeUpdate(String sql) {
-//        return executeUpdate(sql, "9987");
-//    }
-    public boolean executeUpdate(String sql) {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
-        // Connection short_conn = datasource.getInstance();
-        try {
-            // conn = datasource.getInstance(threadid);
-            stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            stmt.executeUpdate(sql);
-            short_conn.commit();
-
-        } catch (SQLException ex) {
-            System.out.println(sql);
-            System.err.println("sql_data.executeUpdate:" + ex.getMessage());
-            return false;
-        } finally {
-            datasource.returnConn(conntry);
-        }
-        return true;
-    }
-
-//    public PreparedStatement prepareStatement(String sql) {
-//        return prepareStatement(sql);
+//    public boolean executeUpdate(String sql) {
+//        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+//        Connection short_conn = connectionpair.getValue();
+//        // Connection short_conn = datasource.getInstance();
+//        try {
+//            // conn = datasource.getInstance(threadid);
+//            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+//            stmt.executeUpdate(sql);
+//            short_conn.commit();
+//            stmt.close();
+//        } catch (SQLException ex) {
+//            System.out.println(sql);
+//            System.err.println("sql_data.executeUpdate:" + ex.getMessage());
+//            return false;
+//        } finally {
+//            datasource.returnConn(connectionpair);
+//        }
+//        return true;
 //    }
 
     public PreparedStatement prepareStatement(String sql) {
         // DataSource datasource = new DB2DataBase();
         // DataSource datasource = new OracleDataBase();
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
         //Connection short_conn = datasource.getInstance(threadid);
         try {
             //short_conn = datasource.getInstance(threadid);
@@ -276,22 +316,10 @@ public class DataSourceOper {
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
-        } finally {
-            datasource.returnConn(conntry);
-        }
-    }
-
-    public int executeUpdate(PreparedStatement tt) {
-        try {
-            return tt.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println(sql);
-            System.err.println("sql_data.executeUpdate:" + ex.getMessage());
-            return -1;
         }
 
-        // return true;
     }
+
 
     public void doclose() throws Exception {
         if (odbcrs != null)
@@ -301,7 +329,7 @@ public class DataSourceOper {
 
     }
 
-    public void addBatch(String sql) {
+/*    public void addBatch(String sql) {
         try {
             if (stmt == null)
                 stmt = this.getStatement();
@@ -310,69 +338,141 @@ public class DataSourceOper {
             System.out.println(sql);
             System.err.println("sql_data.addBatch:" + ex.getMessage());
         }
-    }
+    }*/
 
     public int[] executeBatch() {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
+        int[] a;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
         // Connection short_conn = datasource.getInstance(threadid);
         try {
-            // System.out.println("AAA");
-            if (stmt == null)
-                stmt = this.getStatement();
-            int[] a = stmt.executeBatch();
+            Statement stmt = short_conn.createStatement();
+            a = stmt.executeBatch();
             short_conn.commit();
-            return a;
+            stmt.close();
         } catch (SQLException ex) {
-
             System.err.println("sql_data.executeBatch:" + ex.getMessage());
             return null;
         } finally {
-            datasource.returnConn(conntry);
+            datasource.returnConn(connectionpair);
         }
-
+        return a;
     }
 
-    /*
-     * public void doclose() throws Exception { // stmt.close(); conn.close();
-     *
-     * }
-     */
-
     public boolean validateQuery(String sql) {
-        Map.Entry<String, Connection> conntry = datasource.getInstance();
-        Connection short_conn = conntry.getValue();
-        //Connection short_conn = datasource.getInstance("888");
+        boolean value = true;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
         try {
-            stmt = short_conn.createStatement();
-            odbcrs = stmt.executeQuery(sql);
-            odbcrs.next();
-            if (odbcrs.getString(1) != null) {
-                //closeResultSet(odbcrs, conn);
-                return true;
+            Statement stmt = short_conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            if (rs.getString(1) != null) {
+                value = true;
             } else {
-                //closeResultSet(odbcrs, conn);
-                return false;
+                value = false;
             }
+            rs.close();
+            stmt.close();
         } catch (SQLException ex) {
             System.out.println(sql);
             System.err.println("sql_data.validateQuery:" + ex.getMessage());
             return false;
         } finally {
-            datasource.returnConn(conntry);
+            datasource.returnConn(connectionpair);
         }
-
+        return value;
     }
 
-//    private void closeResultSet(ResultSet rs, Connection c) {
-//        try {
-//            if (!rs.isClosed())
-//                rs.close();
-//
-////            if (!c.isClosed())
-////                c.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public String executeGetString(String sql, int column) {
+        String value = "";
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                System.out.println(rs.getString(1));
+                value = rs.getString(column);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
+    public int executeGetInteger(String sql, int column) {
+        int value = 0;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                // System.out.println(rs.getString(1));
+                value = rs.getInt(column);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
+    public List executeGetStringGroup(String sql, int column) {
+        List<String> value = new ArrayList<String>();
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                value.add(rs.getString(column));
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
+    public List executeGetStringGroup(String sql, int... column) {
+        List<String[]> value = new ArrayList<>();
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            List<String> bean = new ArrayList<>();
+            while (rs.next()) {
+                for (int a : column)
+                    bean.add(rs.getString(a));
+                value.add(bean.toArray(new String[bean.size()]));
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
 }
