@@ -20,7 +20,7 @@ public class FetchData {
         String SQL_SRHR = "SELECT CNTRY_IBM, SRC_SYS, INCIDENT, CLS_TS  FROM DBUCAS1.CASTSRHR WHERE CNTRY_IBM = '616' AND SRC_SYS = 'SALESFORCE'";
         String SQL_SRTR = "SELECT CNTRY_IBM, SRC_SYS, CE_ACT_DOC_NUM FROM DBUCAS1.CASTSRTR WHERE CNTRY_IBM = '616' AND SRC_SYS = 'SALESFORCE'";
         String SQL_CDT = "SELECT CNTRY_IBM, SRC_SYS, CE_ACT_DOC_NUM, GL_STAT_CD  FROM DBUCAS1.CASTCDT WHERE CNTRY_IBM = '616' AND SRC_SYS = 'SALESFORCE'";
-        ResultSet rs = db2d.executeQuery(SQL_SRTR, "111");
+        ResultSet rs = db2d.executeQuery(SQL_SRTR);
         try {
             while (rs.next()) {
                 // printSRHR(rs);
@@ -37,7 +37,7 @@ public class FetchData {
     public void compRAP_SRHR(String incident, String ts) {
         UATDB2Oper db2d = new UATDB2Oper("DB2U");
         String SQL_find_SRTR = "SELECT CNTRY_IBM, SRC_SYS, INCIDENT, OPEN_TS, CLS_TS FROM DBUCAS1.CASTSRHR WHERE CNTRY_IBM = '616' AND SRC_SYS = 'SALESFORCE' and INCIDENT = '" + incident + "'";
-        ResultSet rs = db2d.executeQuery(SQL_find_SRTR, "222");
+        ResultSet rs = db2d.executeQuery(SQL_find_SRTR);
         try {
             if (rs.next()) {
                 String opents = rs.getString(4);
@@ -59,7 +59,7 @@ public class FetchData {
     public void compRAP_SRTR(String doc) {
         UATDB2Oper db2d = new UATDB2Oper("DB2U");
         String SQL_find_SRTR = "SELECT CNTRY_IBM, SRC_SYS, CE_ACT_DOC_NUM FROM DBUCAS1.CASTSRTR WHERE CNTRY_IBM = '616' AND SRC_SYS = 'SALESFORCE' and CE_ACT_DOC_NUM = '" + doc + "'";
-        ResultSet rs = db2d.executeQuery(SQL_find_SRTR, "222");
+        ResultSet rs = db2d.executeQuery(SQL_find_SRTR);
         try {
             if (rs.next()) {
                 System.out.println(doc + "FOUND ");
@@ -99,7 +99,7 @@ public class FetchData {
 
         UATDB2Oper db2d = new UATDB2Oper("DB2U");
         String SQL_find_SRTR = "SELECT CNTRY_IBM, SRC_SYS, CE_ACT_DOC_NUM, GL_STAT_CD  FROM DBUCAS1.CASTCDT WHERE CNTRY_IBM = '616' AND SRC_SYS = 'SALESFORCE' and CE_ACT_DOC_NUM = '" + doc + "'";
-        ResultSet rs = db2d.executeQuery(SQL_find_SRTR, "222");
+        ResultSet rs = db2d.executeQuery(SQL_find_SRTR);
         try {
             if (rs.next()) {
                 System.out.println(doc + "FOUND " + rs.getString(4));

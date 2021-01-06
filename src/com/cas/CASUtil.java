@@ -19,7 +19,7 @@ public class CASUtil {
             List<String> cntry_iso = Collections.synchronizedList(new LinkedList<String>());
             String db2dsql = "SELECT CNTRY_ISO2, CNTRY_DESCR, CNTRY_IBM FROM DBDCASR.CASTCTY  WHERE CNTRY_IBM in (" + code + ");";
             System.out.println(db2dsql);
-            ResultSet rs = db2d.executeQuery(db2dsql, "111");
+            ResultSet rs = db2d.executeQuery(db2dsql);
             while (rs.next()) {
                 // System.out.println(rs.getString(1));
                 cntry_iso.add(rs.getString(1));

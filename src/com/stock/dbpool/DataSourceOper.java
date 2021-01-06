@@ -415,8 +415,29 @@ public class DataSourceOper {
             Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
-                // System.out.println(rs.getString(1));
                 value = rs.getInt(column);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
+    public double executeGetDouble(String sql, int column) {
+        double value = 0;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                value = rs.getDouble(column);
             }
             rs.close();
             stmt.close();

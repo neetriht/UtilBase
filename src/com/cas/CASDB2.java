@@ -65,11 +65,11 @@ public class CASDB2 extends ConnectionManager implements DataSource {
             url = DB2P_url;
             user = user_prod;
             password = password_prod;
-        }  else if (env.equals("DB2U")) {
-                System.out.println("Choose DB2U!!!");
-                url = DB2U_url;
-                user = user_uat;
-                password = password_uat;
+        } else if (env.equals("DB2U")) {
+            System.out.println("Choose DB2U!!!");
+            url = DB2U_url;
+            user = user_uat;
+            password = password_uat;
 
         } else {
             try {
@@ -97,17 +97,17 @@ public class CASDB2 extends ConnectionManager implements DataSource {
         // url = DB2U_url;
     }
 
-    public Connection newConn(String threadid) {
+    @Override
+    public Connection newConn(String con_num) {
 
         try {
-            //System.setProperty("db2.jcc.charsetDecoderEncoder", "3");
             Class.forName(Driver).newInstance();
             System.out.println(url);
             System.out.println(user);
             System.out.println(password);
             odbcconn = DriverManager.getConnection(url, user, password);
             odbcconn.setAutoCommit(true);
-            ConnectionManager.getPool().put(threadid, odbcconn);
+            ConnectionManager.getPool().put(con_num, odbcconn);
             return odbcconn;
         } catch (Exception e) {
             System.out.println("DB connection Errer!!!: " + user + " : " + password);

@@ -30,7 +30,7 @@ public class ReadyDDL {
     public void checkTable(UATDB2Oper ndb, String table_name, String tabschema) {
         //String db2dsql = "SELECT NAME FROM SYSIBM.SYSTABLES  WHERE NAME = '" + table_name + "';";
         String db2dsql = "SELECT TABNAME FROM SYSCAT.TABLES  WHERE TABNAME = '" + table_name + "'";
-        ResultSet rs = ndb.executeQuery(db2dsql, "111");
+        ResultSet rs = ndb.executeQuery(db2dsql);
         try {
             if (rs.next()) {
                 String tname = rs.getString(1);
@@ -60,7 +60,7 @@ public class ReadyDDL {
         //String db2dsql = "SELECT NAME,COLTYPE,LENGTH, SCALE, NULLS, COLNO FROM  SYSIBM.SYSCOLUMNS  WHERE TBNAME = '" + table_name + "' AND TBCREATOR = 'DBUCAS1' ORDER BY COLNO;";
         String db2dsql = "SELECT COLNAME,TYPENAME,LENGTH, SCALE, TYPESTRINGUNITS, NULLS, COLNO FROM  SYSCAT.COLUMNS  WHERE TABNAME = '" + table_name + "'  ORDER BY COLNO";
         //System.out.println(db2dsql);
-        ResultSet rs = ndb.executeQuery(db2dsql, "111");
+        ResultSet rs = ndb.executeQuery(db2dsql);
         try {
             while (rs.next()) {
                 String col_name = rs.getString(1);
@@ -139,7 +139,7 @@ public class ReadyDDL {
 
     public void readcontrol() {
         String db2dsql = "SELECT * FROM CRDB.CDAU_CONTROL ";
-        ResultSet rs = db2d.executeQuery(db2dsql, "111");
+        ResultSet rs = db2d.executeQuery(db2dsql);
         try {
             while (rs.next()) {
                 String SOURCE_DATABSE_NAME = rs.getString(1);

@@ -9,14 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class PGDatabase extends ConnectionManager implements DataSource {
-    //    private static String Driver = "org.postgresql.Driver";
-//    private static String url = "jdbc:mysql://localhost:3306/doubleball";
-//    // "jdbc:mysql://localhost:3306/chatroom?Unicode=true&characterEncoding=gb2312";
-//    //private static String url_m = "jdbc:mysql://192.168.255.136:3306/db2tras";
-//    private static String url_m = "jdbc:mysql://localhost:3306/WeWave";
-//    private static String user = "root";
-//    private static String password = "mko00okm";
-//
+
     static PGDatabase pgbase;
     private static int dbclient_num = 0;
     //    static Connection odbcconn;
@@ -47,14 +40,14 @@ public class PGDatabase extends ConnectionManager implements DataSource {
     }
 
     @Override
-    public Connection newConn(String threadid) {
+    public Connection newConn(String con_num) {
         try {
             Class.forName(Driver).newInstance();
             dbclient_num++;
             System.out.println("==========> Info: " + user + " : " + password + " and client number: " + dbclient_num);
             odbcconn = DriverManager.getConnection(url, user, password);
             odbcconn.setAutoCommit(true);
-            ConnectionManager.getPool().put(threadid, odbcconn);  //add(odbcconn);
+            ConnectionManager.getPool().put(con_num, odbcconn);  //add(odbcconn);
             //System.out.println("Created new Connection: " + connName + " | Total connection size: " + ConnectionManager.getPool().size());
             return odbcconn;
         } catch (Exception e) {

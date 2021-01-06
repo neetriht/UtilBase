@@ -19,12 +19,12 @@ public class PostgreSQLDataBase extends ConnectionManager implements DataSource 
     private static String password = "mko00okm";
 
     @Override
-    public Connection newConn(String threadid) {
+    public Connection newConn(String con_num) {
         try {
             Class.forName(Driver).newInstance();
             odbcconn = DriverManager.getConnection(url, user, password);
             odbcconn.setAutoCommit(true);
-            ConnectionManager.getPool().put(threadid, odbcconn);
+            ConnectionManager.getPool().put(con_num, odbcconn);
             //System.out.println("Created new Connection: " + connName + " | Total connection size: " + ConnectionManager.getPool().size());
             return odbcconn;
         } catch (Exception e) {
@@ -33,12 +33,6 @@ public class PostgreSQLDataBase extends ConnectionManager implements DataSource 
             return null;
         }
     }
-
-//    @Override
-//    public Connection getInstance(String threadid) {
-//
-//
-//    }
 //
 //    @Override
 //    public Connection getInstance() {

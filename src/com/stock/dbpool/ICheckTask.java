@@ -4,5 +4,5 @@ import java.sql.ResultSet;
 
 public interface ICheckTask {
 
-    public int checkWay(ResultSet rs);
+    int checkWay(ResultSet rs);
 }

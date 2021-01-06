@@ -47,7 +47,7 @@ public class TestDown {
         String sql3 = "SELECT USER_CNTRY, USER_NUM, USER_EMAIL FROM DBPCASR.CPCTUSER;";
         String SQL4 = "SELECT NAME,COLTYPE,LENGTH,COLNO FROM SYSIBM.SYSCOLUMNS  WHERE TBNAME = 'CASTSRHR' AND TBCREATOR = 'DBPCASR' ORDER BY COLNO;";
         //String SQL5 = "SELECT NAME,COLTYPE,LENGTH,COLNO FROM SYSIBM.SYSCOLUMNS  WHERE TBNAME = 'CASTSRH' AND TBCREATOR = 'DBPCASR' ORDER BY COLNO;";
-        ResultSet rs = db2d.executeQuery(db2dsql, "111");
+        ResultSet rs = db2d.executeQuery(db2dsql);
         while (rs.next()) {
             System.out.println(rs.getString(1) + " : " + rs.getString(2) + " : " + rs.getString(3));
 //            System.out.println(rs.getString(2));
@@ -60,7 +60,7 @@ public class TestDown {
         UATDB2Oper db2d = new UATDB2Oper("DB2U");
         String sql = "update DBUCAS1.CASTARAS SET EMP_ORG =?, EMP_BU =?, EMP_TYPE =?, EMP_GEO =?, EMP_BAND=?, EMP_TERR =?, EMP_SKIL =?, SITE_PARTY_ID =?, MVS_PROD_TYPE =?, EFF_DT =?, MVS_MKTG_ID=?, MVS_COMPONENT_ID =?, PID_RLS_LVL =?, CAUSE_CD =? WHERE DOC_NUM=2";
         PreparedStatement ps;
-        ps = db2d.prepareStatement(sql, "999");
+        ps = db2d.prepareStatement(sql);
         try {
             ps.setString(1, GlobalRandom.getRandomString(30, 5));
             ps.setString(2, GlobalRandom.getRandomString(8, 5));

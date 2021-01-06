@@ -34,7 +34,7 @@ public class TestChis {
         OPERCHIS db2d = new OPERCHIS();
         String SQL = "SELECT COUNT(*) FROM db2inst1.or_test";
 
-        ResultSet rs = db2d.executeQuery(SQL, "111");
+        ResultSet rs = db2d.executeQuery(SQL);
         while (rs.next()) {
             System.out.println("Total count: " + rs.getString(1));
         }
@@ -45,7 +45,7 @@ public class TestChis {
 
         OPERCHIS sconn = new OPERCHIS();
         String insersql = "insert into db2inst1.or_test values(?,?)";
-        ps = sconn.prepareStatement(insersql, "999");
+        ps = sconn.prepareStatement(insersql);
 
         try {
             while (allcount < TOTAL) {
@@ -66,7 +66,7 @@ public class TestChis {
         OPERCHIS db2d = new OPERCHIS();
         //String SQL = "SELECT * FROM hadoop.RASTGAMB";
         String SQL = "SELECT * FROM db2inst1.RASTSTOK";
-        ResultSet rs = db2d.executeQuery(SQL, "111");
+        ResultSet rs = db2d.executeQuery(SQL);
         while (rs.next()) {
             System.out.println("Total count: " + rs.getString(1));
             System.out.println("Total count: " + rs.getString(2));

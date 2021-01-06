@@ -14,7 +14,7 @@ public class OPERCHIS {
     String sql = null;
     ResultSet odbcrs = null;
 
-    public Statement getStatement(String threadid) {
+    public Statement getStatement() {
         try {
 
             conn = datasource.getInstance().getValue();
@@ -29,7 +29,7 @@ public class OPERCHIS {
         }
     }
 
-    public ResultSet executeQuery(String sql, String threadid) {
+    public ResultSet executeQuery(String sql) {
 
         try {
             // System.out.println(sql);
@@ -41,11 +41,9 @@ public class OPERCHIS {
             // stmt =
             // conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 
-            // System.out.println(conn + ": " + stmt + " : " + threadid);
             odbcrs = stmt.executeQuery(sql);
 
         } catch (SQLException ex) {
-            System.out.println(threadid + " : " + sql);
             System.err.println("sql_data.executeQuery:" + ex.getMessage());
             ex.printStackTrace();
             return null;
@@ -53,11 +51,10 @@ public class OPERCHIS {
         return odbcrs;
     }
 
-    public boolean executeUpdate(String sql, String threadid) {
+    public boolean executeUpdate(String sql) {
 
         Connection short_conn = datasource.getInstance().getValue();
         try {
-            // conn = datasource.getInstance(threadid);
             stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             stmt.executeUpdate(sql);
 
@@ -71,12 +68,11 @@ public class OPERCHIS {
         return true;
     }
 
-    public PreparedStatement prepareStatement(String sql, String threadid) {
+    public PreparedStatement prepareStatement(String sql) {
         // DataSource datasource = new DB2DataBase();
         // DataSource datasource = new OracleDataBase();
         Connection short_conn = datasource.getInstance().getValue();
         try {
-            //short_conn = datasource.getInstance(threadid);
             short_conn.setAutoCommit(true);
             PreparedStatement ps = short_conn.prepareStatement(sql);
             return ps;

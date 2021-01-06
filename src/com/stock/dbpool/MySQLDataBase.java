@@ -96,7 +96,7 @@ public class MySQLDataBase extends ConnectionManager implements DataSource {
 //    }
 //
     @Override
-    public Connection newConn(String threadid) {
+    public Connection newConn(String con_num) {
 
         //Connection c = ;
         return conn().getValue();

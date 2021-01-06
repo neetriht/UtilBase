@@ -51,7 +51,7 @@ public class UATDB2Oper {
         }
     }
 
-    public ResultSet executeQuery(String sql, String threadid) {
+    public ResultSet executeQuery(String sql) {
 
         try {
             // System.out.println(sql);
@@ -67,7 +67,6 @@ public class UATDB2Oper {
             odbcrs = stmt.executeQuery(sql);
 
         } catch (SQLException ex) {
-            System.out.println(threadid + " : " + sql);
             System.err.println("sql_data.executeQuery:" + ex.getMessage());
             ex.printStackTrace();
             return null;
@@ -75,7 +74,7 @@ public class UATDB2Oper {
         return odbcrs;
     }
 
-    public boolean executeUpdate(String sql, String threadid) {
+    public boolean executeUpdate(String sql) {
 
         Connection short_conn = datasource.getInstance().getValue();
         try {
@@ -94,10 +93,6 @@ public class UATDB2Oper {
     }
 
     public PreparedStatement prepareStatement(String sql) {
-        return prepareStatement(sql, "9988");
-    }
-
-    public PreparedStatement prepareStatement(String sql, String threadid) {
         // DataSource datasource = new DB2DataBase();
         // DataSource datasource = new OracleDataBase();
         Connection short_conn = datasource.getInstance().getValue();

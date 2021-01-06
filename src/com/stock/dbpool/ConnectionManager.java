@@ -13,17 +13,11 @@ public abstract class ConnectionManager {
 
     public static Hashtable<String, Connection> ConnectionPools = new Hashtable<String, Connection>();
 
-    static ConnectionManager connmager = null;
+   /* static ConnectionManager connmager = null;
     private static int CONN_NUM = 1000;
-    private static int conn_base = 0;
-    public static String propertiesfile = "";
+    private static int conn_base = 0;*/
 
-    public abstract Connection newConn(String connName);
-
-    public void setPropertiesfile(String propertiesfile) {
-        propertiesfile = propertiesfile;
-    }
-    //public abstract Connection newConn();
+    public abstract Connection newConn(String con_num);
 
     public static Hashtable<String, Connection> getPool() {
         if (ConnectionPools == null) {
@@ -57,18 +51,14 @@ public abstract class ConnectionManager {
                     conn = newConn(auto_key);
                 } else {
                     if (conn.isClosed()) {
-
                         conn = newConn(auto_key);
                     }
                 }
-
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
         } else {
-            //
             String new_auto_key = GlobalRandom.getRandomString(4, 3);
             if (!ConnectionPools.keySet().contains(new_auto_key)) {
                 new_auto_key = GlobalRandom.getRandomString(4, 3);
@@ -77,16 +67,13 @@ public abstract class ConnectionManager {
           //  System.out.println("Creante new connection: " + new_auto_key);
             conn = newConn(new_auto_key);
             auto_key = new_auto_key;
-            //
-            // poolName);
         }
         //System.out.println("Used connection: " + auto_key);
         RemoveConn(auto_key);
         return new AbstractMap.SimpleEntry<>(auto_key, conn);
-
     }
 
-    public Connection getConnection(String connName) {
+  /*  public Connection getConnection(String connName) {
         if (ConnectionPools == null) {
             ConnectionPools = new Hashtable<String, Connection>();
         }
@@ -116,7 +103,7 @@ public abstract class ConnectionManager {
             // poolName);
         }
         return conn;
-    }
+    }*/
 
     private static void RemoveConn(String cname) {
         ConnectionPools.remove(cname);
@@ -176,7 +163,7 @@ public abstract class ConnectionManager {
         // System.out.println("Close Connection Error");
         // }
         // }
-
+        ConnectionPools.clear();
         System.out.println("Connection LEFT: " + ConnectionPools.size());
         ConnectionPools = null;
     }

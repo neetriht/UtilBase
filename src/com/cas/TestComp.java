@@ -40,7 +40,7 @@ public class TestComp {
     public static void readDB2U() throws Exception {
         UATDB2Oper db2d = new UATDB2Oper("DB2D");
         String db2dsql = "SELECT NAME,COLTYPE,LENGTH,COLNO FROM SYSIBM.SYSCOLUMNS  WHERE TBNAME = 'CASTSRH' AND TBCREATOR = 'DBDCASR' ORDER BY COLNO;";
-        ResultSet rs = db2d.executeQuery(db2dsql, "111");
+        ResultSet rs = db2d.executeQuery(db2dsql);
         while (rs.next()) {
             System.out.println(rs.getString(1) + " : " + rs.getString(2) + " : " + rs.getString(3) + " : " + rs.getString(4));
 //            System.out.println(rs.getString(2));
@@ -56,7 +56,7 @@ public class TestComp {
         UATDB2Oper db2d = new UATDB2Oper("DB2D");
         String c = cntry_iso2;
         String db2dsql = "SELECT CNTRY_ISO2, CNTRY_DESCR, CNTRY_IBM FROM DBDCASR.CASTCTY  WHERE CNTRY_ISO2='" + c + "';";
-        ResultSet rs = db2d.executeQuery(db2dsql, "111");
+        ResultSet rs = db2d.executeQuery(db2dsql);
         if (rs.next()) {
             return rs.getString(2);
             //System.out.println(rs.getString(1) + " : " + rs.getString(2));
@@ -103,7 +103,7 @@ public class TestComp {
 
             for (String sql : new String[]{admin, aprover, dis}) {
                 System.out.println(sql);
-                db2d.executeUpdate(sql, "234");
+                db2d.executeUpdate(sql);
             }
             //d
 
@@ -140,7 +140,7 @@ public class TestComp {
 
                 for (String sql : new String[]{admin, aprover}) {
                     System.out.println(sql);
-                    db2d.executeUpdate(sql, "234");
+                    db2d.executeUpdate(sql);
                 }
                 //d
 
@@ -152,7 +152,7 @@ public class TestComp {
     public static void readDB2D() throws Exception {
         UATDB2Oper db2d = new UATDB2Oper();
         String db2dsql = "SELECT NAME,COLTYPE,LENGTH,COLNO FROM SYSIBM.SYSCOLUMNS  WHERE TBNAME = 'CASTSRH' AND TBCREATOR = 'DBDCASR' ORDER BY COLNO;";
-        ResultSet rs = db2d.executeQuery(db2dsql, "222");
+        ResultSet rs = db2d.executeQuery(db2dsql);
 
         while (rs.next()) {
             System.out.println(rs.getString(1) + " : " + rs.getString(2) + " : " + rs.getString(3) + " : " + rs.getString(4));
@@ -171,7 +171,7 @@ public class TestComp {
     public static void readUpdateMass() throws Exception {
         UATDB2Oper db2d = new UATDB2Oper();
         String db2dsql = "SELECT DOC_NUM FROM DBDCASR.CASTRAP WHERE CNTRY_IBM = '616' AND DOC_NUM IN ('00066720','00066721','R04754223884','R04756FAC4A8','R047C110DDB6','00065835','00065847','00065852','00066645');";
-        ResultSet rs = db2d.executeQuery(db2dsql, "222");
+        ResultSet rs = db2d.executeQuery(db2dsql);
 
         double[] pool = {0.01, 3600, 10.1, 2.4, 7, 2, 100, 120, 33, 1.11, 9.99, 111, 99.9, 22, 11, 55.1};
 
@@ -190,7 +190,7 @@ public class TestComp {
     public static void readUpdateStringMass() throws Exception {
         UATDB2Oper db2d = new UATDB2Oper();
         String db2dsql = "SELECT DOC_NUM FROM DBDCASR.CASTRAP WHERE CNTRY_IBM = '616' AND SRC_SYS = 'RETAINRAP';";
-        ResultSet rs = db2d.executeQuery(db2dsql, "222");
+        ResultSet rs = db2d.executeQuery(db2dsql);
 
         double[] pool = {0.01, 3600, 10.1, 2.4, 7, 2, 100, 120, 33, 1.11, 9.99, 111, 99.9, 22, 11, 55.1};
         String[] pools = {"11:54:59", "16:19:15", "17:30:00", "07:26:15", "08:02:30", "10:13:14", "09:14:27", "11:24:27", "11:27:41", "11:35:54", "11:45:00", "12:47:14"};
@@ -200,7 +200,7 @@ public class TestComp {
             System.out.println(doc_num + " : " + GlobalRandom.getRandomfloat(pool));
             String sql = "update DBDCASR.CASTRAP set ACTV_STO_TM = '" + GlobalRandom.getRandomString(pools) + "' where doc_num = '" + doc_num + "'";
             System.out.println(sql);
-            db2d.executeUpdate(sql, "123");
+            db2d.executeUpdate(sql);
 //            System.out.println(rs.getString(2));
 //            System.out.println(rs.getString(3));
 //            System.out.println(rs.getString(4));
