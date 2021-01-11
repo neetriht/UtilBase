@@ -1,5 +1,6 @@
 package com;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,5 +91,31 @@ public class GlobalStock {
             }
         }
         return xx;
+    }
+
+    public static String checkvalue(String s) {
+
+        if (s.indexOf("亿") > 0) {
+            s = s.replaceAll("亿", "");
+            if (s.indexOf("万") > 0) {
+                s = s.replaceAll("万", "");
+                s = new BigDecimal(s.trim()).multiply(new BigDecimal(10000)).toString();
+                //s = middle.toString();
+                // BigDecimal b = a * 10000;
+            }
+            // System.out.println(s);
+            s = new BigDecimal(s.trim()).multiply(new BigDecimal(10000)).toString();
+        }
+        if (s.indexOf("万") > 0)
+            s = s.replaceAll("万", "");
+        if (s.indexOf("--") > 0)
+            s = s.replaceAll("--", "0");
+        if (s.indexOf("%") > 0)
+            s = s.replaceAll("%", "0");
+        if (s.equals("-") | s.equals("") | s.equals(" "))
+            s = "0";
+
+
+        return s.trim();
     }
 }
