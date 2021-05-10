@@ -76,8 +76,8 @@ public class GlobalTimer {
 //            throw new IllegalArgumentException("Illegal Argument arg:" + curTime);
 //        }
 
-        Date startdate = MoveTime(schedule_Date, 0);
-        Date enddate = MoveTime(schedule_Date, 3);   //* 3 minites can run
+        Date startdate = MoveTime(schedule_Date, 0, 1);
+        Date enddate = MoveTime(schedule_Date, 3, 1);   //* 3 minites can run
         Date current_time = new Date();
         if (current_time.getTime() >= startdate.getTime() && enddate.getTime() > current_time.getTime()) {
             System.out.println("$^0^$ Ture: " + current_time + " " + schedule_Date + " : " + startdate + " :   " + enddate);
@@ -101,24 +101,54 @@ public class GlobalTimer {
         System.out.println(sdf.format(dateFrom) + "到" + sdf.format(dateNow));
     }
 
-    public static Date MoveTime(Date olddate, int change) {
+    public static Date MoveTime(Date olddate, int change, int type) {
         //  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         // Date dateNow = new Date();
         Calendar cl = Calendar.getInstance();
         cl.setTime(olddate);
-//		cl.add(Calendar.DAY_OF_YEAR, -1);	//一天
-//		cl.add(Calendar.WEEK_OF_YEAR, -1);	//一周
-//		cl.add(Calendar.MONTH, -1);			//一个月
-        cl.add(Calendar.MINUTE, change);
+        if (type == 1) {
+            cl.add(Calendar.MINUTE, change);
+        } else if (type == 2) {
+            cl.add(Calendar.DAY_OF_YEAR, change);    //一天
+        } else if (type == 3) {
+            cl.add(Calendar.WEEK_OF_YEAR, change);    //一周
+        } else if (type == 4) {
+            cl.add(Calendar.MONTH, change);            //一个月
+        } else System.out.println("wrong type");
+//
+//
+//
+
         Date newdate = cl.getTime();
         // System.out.println("Change : " + newdate);
         return newdate;
     }
 
+    public static String MoveTimeofDay(int change) {
+        //  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        // Date dateNow = new Date();
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(new Date());
+        cl.add(Calendar.DAY_OF_YEAR, change);    //一天
+//		cl.add(Calendar.WEEK_OF_YEAR, -1);	//一周
+//		cl.add(Calendar.MONTH, -1);			//一个月
+//        cl.add(Calendar.MINUTE, change);
+        Date newdate = cl.getTime();
+        // System.out.println("Change : " + newdate);
+        return getToday(newdate);
+    }
+
+
     public static String getToday() {
         // yyyy-MM-dd
         //return "2019-03-08";
         return dateformat.format(new Date());
+    }
+
+    public static String getToday(Date d) {
+        // yyyy-MM-dd
+        //return "2019-03-08";
+        return dateformat.format(d);
     }
 
     public static String getDayTime() {
@@ -149,7 +179,19 @@ public class GlobalTimer {
 
     public static String getTimestamp(int x) {
         // yyyy-MM-dd-HH:mm:ss.SSS
-        return datetimeformatjava.format(MoveTime(new Date(), x * 60));
+        return datetimeformatjava.format(MoveTime(new Date(), x * 60, 1));
+    }
+
+    public static String formatDays(long second) {
+        String useddays = "1";
+        if (second != 0) {
+
+            double diffDays = (double) second / (24 * 60 * 60 * 1000);
+            //System.out.println(diffDays);
+            useddays = String.valueOf((int) Math.ceil((double) Math.abs(diffDays)));
+        }
+        return useddays;
+
     }
 
     public static String formatSecond(long second) {
@@ -193,6 +235,20 @@ public class GlobalTimer {
         try {
             Date dt1 = new SimpleDateFormat("yyyyMMddHHmmss").parse(d1);//将字符串转换为date类型
             Date dt2 = new SimpleDateFormat("yyyyMMddHHmmss").parse(d2);
+
+            return compareDate(dt1, dt2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean compareDateTime(String d1, String d2, int type) {
+        System.out.println(d1);
+        System.out.println(d2);
+        try {
+            Date dt1 = datetimeformat.parse(d1);//将字符串转换为date类型
+            Date dt2 = datetimeformat.parse(d2);
 
             return compareDate(dt1, dt2);
         } catch (ParseException e) {
@@ -258,7 +314,8 @@ public class GlobalTimer {
         else return false;
     }
 
-    public static String usedtime(String start, String stop) {
+    public static String usedtime(String start, String stop, int type) {
+        // type=1  caculate as days
         Calendar cd01 = Calendar.getInstance();
         Calendar cd02 = Calendar.getInstance();
         try {
@@ -271,9 +328,17 @@ public class GlobalTimer {
 
         long usedtime = cd02.getTimeInMillis() - cd01.getTimeInMillis();
 
-        String xxx = formatSecond(usedtime);
-        // System.out.println(xxx);
-        return xxx;
+        if (type == 1)
+            return formatDays(usedtime);
+        else {
+            String xxx = formatSecond(usedtime);
+            // System.out.println(xxx);
+            return xxx;
+        }
+    }
+
+    public static String usedtime(String start, String stop) {
+        return usedtime(start, stop, 0);
     }
 
 

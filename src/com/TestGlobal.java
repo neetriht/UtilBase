@@ -27,7 +27,10 @@ public class TestGlobal {
 //        while(o.size()>0)
 //            System.out.println(o.remove(0));
        // System.out.println(GlobalTimer.getDayTime());
-       boolean a = GlobalTimer.compareCountDateTime("2019-12-09-15:55:01","2019-12-09-15:58:55",3);
-        System.out.println(a);
+     //  boolean a = GlobalTimer.compareCountDateTime("2019-12-09-15:55:01","2019-12-09-15:58:55",3);
+     //   System.out.println(a);
+
+      int ss =   Integer.parseInt(GlobalTimer.usedtime("2021-03-20-15:55:02", "2021-03-26-15:55:01", 1));
+        System.out.println(ss);
     }
 }

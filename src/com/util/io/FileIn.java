@@ -5,6 +5,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 
+
 public class FileIn {
     File inFile;
     int error_rerun_flag = 0;
@@ -16,13 +17,13 @@ public class FileIn {
     URL u;
     InputStream in;
 
-    public BufferedReader getBufferedReaderFromURL(URL url) throws Exception {
+    public BufferedReader getBufferedReaderFromURL(URL url)  {
         try {
 
             URLConnection uc = url.openConnection();
             u = url;
-            uc.setConnectTimeout(10000);
-            uc.setReadTimeout(25000);
+            uc.setConnectTimeout(30000);
+            uc.setReadTimeout(30000);
 
 
             InputStream in = uc.getInputStream();
@@ -52,21 +53,27 @@ public class FileIn {
             error_rerun_flag = 0;
             return br;
             // filename = infile;
-        } catch (SocketTimeoutException ioe) {
+
+
+        } catch (Exception ioe ) {
+            //  SocketTimeoutException    ***  UnknownHostException
             error_rerun_flag++;
+            //ioe.printStackTrace();
             if (error_rerun_flag < 10) {
                 System.out.println(url);
                 System.out.println("Happen SocketTimeoutException: rerun " + error_rerun_flag);
+                //error_rerun_flag = 0;
                 return this.doAgain(url);
             } else {
-                ioe.printStackTrace();
-                System.out.println("Scrapy Error - s002: BufferReader error");
+                //ioe.printStackTrace();
+                System.out.println("Scrapy Error - s002: BufferReader error" + error_rerun_flag);
+                error_rerun_flag = 0;
                 return null;
             }
         }
     }
 
-    private BufferedReader doAgain(URL url) throws Exception {
+    private BufferedReader doAgain(URL url)  {
         return getBufferedReaderFromURL(url);
     }
 

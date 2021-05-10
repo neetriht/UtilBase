@@ -62,7 +62,7 @@ public abstract class ConnectionManager {
             String new_auto_key = GlobalRandom.getRandomString(4, 3);
             if (!ConnectionPools.keySet().contains(new_auto_key)) {
                 new_auto_key = GlobalRandom.getRandomString(4, 3);
-                System.out.println("ABC new connection: " + new_auto_key);
+                System.out.println("ABC new connection: " + new_auto_key+" ====== ");
             }
           //  System.out.println("Creante new connection: " + new_auto_key);
             conn = newConn(new_auto_key);
