@@ -268,6 +268,7 @@ public class DataSourceOper {
         Map.Entry<String, Connection> connectionpair = datasource.getInstance();
         Connection short_conn = connectionpair.getValue();
         try {
+            short_conn.setAutoCommit(false);
             Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             stmt.executeUpdate(sql);
             short_conn.commit();

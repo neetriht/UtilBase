@@ -12,6 +12,8 @@ public class FileOut {
             f.createNewFile();
             dos = new DataOutputStream(new FileOutputStream(f));
         } catch (IOException ex) {
+            System.out.println("ERROR");
+            ex.printStackTrace();
             return (null);
         }
         return dos;

@@ -267,5 +267,7 @@
     <orderEntry type="library" name="Maven: org.eclipse.jgit:org.eclipse.jgit:5.5.1.201910021850-r" level="project" />
     <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.3" level="project" />
     <orderEntry type="library" name="Maven: com.rabbitmq:amqp-client:5.7.3" level="project" />
+    <orderEntry type="library" name="Maven: org.python:jython:2.7.2" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:13.0" level="project" />
   </component>
 </module>
