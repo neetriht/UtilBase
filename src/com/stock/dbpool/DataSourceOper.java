@@ -63,6 +63,28 @@ public class DataSourceOper {
         }
     }
 
+    public int executeGetInteger(String sql, int column) {
+        int value = 0;
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        Connection short_conn = connectionpair.getValue();
+        try {
+            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                value = rs.getInt(column);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        } finally {
+            datasource.returnConn(connectionpair);
+        }
+        return value;
+    }
+
 
 //    public String doQueryReturnBoolean(String sql) {
 //        String value;
@@ -408,27 +430,6 @@ public class DataSourceOper {
         return value;
     }
 
-    public int executeGetInteger(String sql, int column) {
-        int value = 0;
-        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
-        Connection short_conn = connectionpair.getValue();
-        try {
-            Statement stmt = short_conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                value = rs.getInt(column);
-            }
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-
-        } finally {
-            datasource.returnConn(connectionpair);
-        }
-        return value;
-    }
 
     public double executeGetDouble(String sql, int column) {
         double value = 0;
