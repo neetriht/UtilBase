@@ -84,6 +84,15 @@ public class DataSourceOper {
         return value;
     }
 
+    public Map.Entry<String, Connection> getConnection() {
+        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
+        return connectionpair;
+    }
+
+
+    public void releaseConnection(Map.Entry<String, Connection> CONNECTIONPAIR) {
+        datasource.returnConn(CONNECTIONPAIR);
+    }
 
 //    public String doQueryReturnBoolean(String sql) {
 //        String value;
@@ -190,15 +199,6 @@ public class DataSourceOper {
         return value;
     }
 
-    public Map.Entry<String, Connection> getConnection() {
-        Map.Entry<String, Connection> connectionpair = datasource.getInstance();
-        return connectionpair;
-    }
-
-
-    public void releaseConnection(Map.Entry<String, Connection> CONNECTIONPAIR) {
-        datasource.returnConn(CONNECTIONPAIR);
-    }
 
   /*  public ResultSet executeQuery(String sql, String threadid) {
         ResultSet odbcrs;
