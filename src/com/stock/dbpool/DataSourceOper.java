@@ -9,19 +9,20 @@ public class DataSourceOper {
 
     // DataSource datasource = new DB2DataBase();
     // DataSource datasource = new OracleDataBase();
-    DataSource datasource = new PGDatabase();
+    DataSource datasource; // = new PGDatabase();
     Statement stmt = null;
     String sql = null;
     ResultSet odbcrs = null;
 
     public DataSourceOper() {
+        datasource = new PGDatabase();
         //datasource = new DB2DataBase(propvalue);
     }
 
-    public DataSourceOper(String propvalue) {
-        datasource = new DB2DataBase(propvalue);
-    }
-
+//    public DataSourceOper(String propvalue) {
+//        datasource = new DB2DataBase(propvalue);
+//    }
+//
     public DataSourceOper(DataSource ds) {
         datasource = ds;
     }

@@ -1,7 +1,5 @@
 package com;
 
-import com.report.jython.UsePython;
-
 public class GlobalEnv {
 
 
