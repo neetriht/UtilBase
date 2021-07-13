@@ -33,6 +33,9 @@ public class RunLoadBalls {
                 } else if (p.equals("3")) {
                     Import7star hb = new Import7star();
                     hb.ReadValues();
+                } else if (p.equals("4")) {
+                    Import3D hb = new Import3D();
+                    hb.ReadValues();
                 } else System.out.println("please only input 1 or 2 as parameter!!!");
             } catch (Exception e) {
                 e.printStackTrace();

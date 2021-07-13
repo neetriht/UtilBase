@@ -24,7 +24,7 @@ public class Import3D extends ImportBase {
 
     public void DeleteAll() {
         try {
-            String sql = "delete from red_blue";
+            String sql = "delete from threed";
             System.out.println(sql);
             // sconn.executeDelete(sql);
             // sconn.doclose();
@@ -37,7 +37,7 @@ public class Import3D extends ImportBase {
     public void ReadValues() {
         try {
             System.out.println("Check db");
-            dm = getMaxDate("red_blue");
+            dm = getMaxDate("threed");
             System.out.println("verify db");
 
             if (dm == null)
@@ -81,7 +81,7 @@ public class Import3D extends ImportBase {
         try {
             Date dv = ddd.parse(dt);
             if (dv.after(dm)) {
-                System.out.println(dv);
+                //System.out.println(dv);
                 InsertValue(value);
             } else {
                 //System.out.println("not new");
@@ -131,7 +131,7 @@ public class Import3D extends ImportBase {
 
         String sql = null;
         try {
-            sql = "insert into red_blue values(" + readyvalue(val) + ");";
+            sql = "insert into threed values(" + readyvalue(val) + ");";
             // sql = "insert into DBTLRBR.TABLE_1 values("+val+")";
             System.out.println(sql);
             sconn.executeSQL(sql);
@@ -147,25 +147,25 @@ public class Import3D extends ImportBase {
     public String readyvalue(String val) {
         String[] b = val.split(",");
 
-        if (b[16].trim().length() < 4) {
-            System.out.println("have not update bonus");
-            System.exit(0);
-        }
+//        if (b[16].trim().length() < 4) {
+//            System.out.println("have not update bonus");
+//            System.exit(0);
+//        }
 
         String value = "";
         for (String a : b) {
             value += "'" + a + "',";
         }
         value = value.substring(0, value.length() - 1);
-        value = value.replace("'01'", "'1'");
-        value = value.replace("'02'", "'2'");
-        value = value.replace("'03'", "'3'");
-        value = value.replace("'04'", "'4'");
-        value = value.replace("'05'", "'5'");
-        value = value.replace("'06'", "'6'");
-        value = value.replace("'07'", "'7'");
-        value = value.replace("'08'", "'8'");
-        value = value.replace("'09'", "'9'");
+//        value = value.replace("'01'", "'1'");
+//        value = value.replace("'02'", "'2'");
+//        value = value.replace("'03'", "'3'");
+//        value = value.replace("'04'", "'4'");
+//        value = value.replace("'05'", "'5'");
+//        value = value.replace("'06'", "'6'");
+//        value = value.replace("'07'", "'7'");
+//        value = value.replace("'08'", "'8'");
+//        value = value.replace("'09'", "'9'");
         //System.out.println(value);
         return value;
     }
